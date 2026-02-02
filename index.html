@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SaFem - Stay Safe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" crossorigin="" />
+    <!-- Leaflet Control Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.css" crossorigin="" />
+</head>
+<body>
+    <div class="app-container">
+        <!-- Home Tab Content -->
+        <div id="home-tab" class="tab-content active">
+            <header class="home-header">
+                <img src="logo.png" alt="SaFem" class="app-logo">
+                <h1>Welcome to <span class="highlight">SaFem</span></h1>
+                <p class="tagline">Your safety companion, always by your side</p>
+            </header>
+
+            <section class="greeting-section">
+                <div class="greeting-card">
+                    <div class="greeting-icon">👋</div>
+                    <h2>Hello there!</h2>
+                    <p>We're here to help you navigate safely. Your well-being is our priority.</p>
+                </div>
+            </section>
+
+            <section class="quick-actions">
+                <h3>Quick Actions</h3>
+                <div class="action-grid">
+                    <button class="action-btn" onclick="switchTab('map')">
+                        <span class="action-icon">🗺️</span>
+                        <span class="action-text">Plan Route</span>
+                    </button>
+                    <button class="action-btn" id="shareLocationBtn">
+                        <span class="action-icon">📍</span>
+                        <span class="action-text">Share Location</span>
+                    </button>
+                    <button class="action-btn" id="emergencyContactsBtn">
+                        <span class="action-icon">👥</span>
+                        <span class="action-text">Contacts</span>
+                    </button>
+                    <button class="action-btn" id="safetyTipsBtn">
+                        <span class="action-icon">💡</span>
+                        <span class="action-text">Safety Tips</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="safety-reminder">
+                <div class="reminder-card">
+                    <div class="reminder-icon">🛡️</div>
+                    <div class="reminder-content">
+                        <h4>Stay Safe Today</h4>
+                        <p>Remember to share your route with a trusted contact when traveling to new places.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="features-section">
+                <h3>How We Keep You Safe</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <div class="feature-icon">🔒</div>
+                        <div class="feature-text">
+                            <h4>Safe Routes</h4>
+                            <p>Navigate with confidence using our trusted routing</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📱</div>
+                        <div class="feature-text">
+                            <h4>Easy Sharing</h4>
+                            <p>Share your location with loved ones instantly</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">⚡</div>
+                        <div class="feature-text">
+                            <h4>Quick Access</h4>
+                            <p>Emergency features always one tap away</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Map Tab Content -->
+        <div id="map-tab" class="tab-content">
+            <div class="map-header">
+                <h2>🛡️ Safe Route Planner</h2>
+                <p>Finding the safest walking path for you</p>
+            </div>
+
+            <div class="search-container">
+                <div class="search-box">
+                    <div class="search-input-group">
+                        <span class="input-icon start-icon">📍</span>
+                        <input type="text" id="startLocation" placeholder="Your location (or click 'Use My Location')">
+                        <button class="use-location-btn" id="useMyLocation" title="Use my current location">📌</button>
+                    </div>
+                    <div class="search-input-group">
+                        <span class="input-icon end-icon">🏁</span>
+                        <input type="text" id="endLocation" placeholder="Enter destination">
+                    </div>
+                    <div class="safety-toggle">
+                        <label class="toggle-label">
+                            <input type="checkbox" id="showSafetyLayer" checked>
+                            <span class="toggle-text">Show safety zones on map</span>
+                        </label>
+                    </div>
+                    <button class="route-btn" id="getRouteBtn">
+                        <span>🛡️ Find Safest Route</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="map-legend">
+                <div class="legend-item"><span class="legend-dot danger"></span> Hazard Zone</div>
+                <div class="legend-item"><span class="legend-dot safe"></span> Safe Zone</div>
+                <div class="legend-item"><span class="legend-line"></span> Safe Route</div>
+            </div>
+
+            <div class="map-container">
+                <div id="map"></div>
+            </div>
+
+            <div class="route-info" id="routeInfo">
+                <div class="route-details">
+                    <div class="route-stat">
+                        <span class="stat-label">Distance</span>
+                        <span class="stat-value" id="routeDistance">--</span>
+                    </div>
+                    <div class="route-stat">
+                        <span class="stat-label">Duration</span>
+                        <span class="stat-value" id="routeDuration">--</span>
+                    </div>
+                </div>
+                <button class="share-route-btn" id="shareRouteBtn">
+                    <span>📤</span> Share Route
+                </button>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <nav class="bottom-nav">
+            <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </button>
+            <button class="nav-btn" data-tab="map" onclick="switchTab('map')">
+                <span class="nav-icon">🗺️</span>
+                <span class="nav-label">Map</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <!-- Leaflet Routing Machine -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js" crossorigin=""></script>
+    <!-- Leaflet Control Geocoder -->
+    <script src="https://unpkg.com/leaflet-control-geocoder@2.4.0/dist/Control.Geocoder.js" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html>
